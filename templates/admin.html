@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Admin — BloodBridge{% endblock %}
+{% block content %}
+<div class="dashboard-head"><div><span class="eyebrow">NETWORK CONTROL</span><h1>Admin dashboard</h1><p>Verify requests before they enter the donor matching network.</p></div></div>
+<div class="stats compact"><div><b>{{stats.donors}}</b><span>Donors</span></div><div><b>{{stats.requests}}</b><span>Requests</span></div><div><b>{{stats.pending}}</b><span>Pending</span></div><div><b>{{stats.fulfilled}}</b><span>Fulfilled</span></div></div>
+
+<section class="section panel">
+<div class="panel-head"><h2>Blood requests</h2></div>
+<div class="table-wrap"><table>
+<tr><th>ID</th><th>Patient</th><th>Blood</th><th>Priority</th><th>Hospital</th><th>Status</th><th>Action</th></tr>
+{% for r in requests %}
+<tr>
+<td>#{{r.id}}</td><td>{{r.patient_name}}</td><td>{{r.blood_group}} × {{r.units}}</td>
+<td><span class="priority {{r.priority|lower}}">{{r.priority}}</span></td><td>{{r.hospital_name}}<br><small>{{r.city}}</small></td><td>{{r.status}}{% if r.verified %} ✓{% endif %}</td>
+<td class="actions">
+{% if not r.verified and r.status != 'REJECTED' %}<form method="post" action="{{url_for('verify_request',request_id=r.id)}}"><button class="btn small">Verify</button></form>{% endif %}
+{% if r.verified and r.status != 'FULFILLED' %}<form method="post" action="{{url_for('fulfill_request',request_id=r.id)}}"><button class="btn small outline">Fulfill</button></form>{% endif %}
+{% if r.status not in ['FULFILLED','REJECTED'] %}<form method="post" action="{{url_for('reject_request',request_id=r.id)}}"><button class="danger-link">Reject</button></form>{% endif %}
+</td></tr>
+{% else %}<tr><td colspan="7">No requests yet.</td></tr>{% endfor %}
+</table></div></section>
+
+<section class="section panel">
+<div class="panel-head"><h2>Top donors</h2></div>
+<div class="table-wrap"><table><tr><th>Name</th><th>Blood</th><th>City</th><th>Credits</th><th>Last Donation</th></tr>
+{% for d in donors %}<tr><td>{{d.name}}</td><td>{{d.blood_group or '—'}}</td><td>{{d.city or '—'}}</td><td><b>{{d.credits}}</b></td><td>{{d.last_donation or '—'}}</td></tr>{% endfor %}
+</table></div></section>
+{% endblock %}

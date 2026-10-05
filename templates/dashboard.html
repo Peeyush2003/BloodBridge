@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — BloodBridge{% endblock %}
+{% block content %}
+<div class="dashboard-head">
+  <div><span class="eyebrow">MY DASHBOARD</span><h1>Hello, {{ user.name }} 👋</h1><p>{{ user.city or 'Location not set' }} · {{ user.blood_group or 'Blood group not set' }}</p></div>
+  <a class="btn" href="{{ url_for('request_blood') }}">+ Emergency Request</a>
+</div>
+
+<div class="dashboard-grid">
+  <div class="credit-card"><span>COMMUNITY CREDITS</span><strong>{{ user.credits }}</strong><small>Earned from verified donations</small></div>
+  <div class="mini-stat"><span>Donations</span><b>{{ donations|length }}</b></div>
+  <div class="mini-stat"><span>Last donation</span><b>{{ user.last_donation or '—' }}</b></div>
+</div>
+
+<div class="two-col section">
+  <section class="panel">
+    <div class="panel-head"><h2>Profile</h2></div>
+    <form method="post" action="{{ url_for('profile') }}" class="form-card flat">
+      <label>Blood Group<select name="blood_group">{% for g in blood_groups %}<option {% if user.blood_group==g %}selected{% endif %}>{{g}}</option>{% endfor %}</select></label>
+      <label>City<input name="city" value="{{ user.city or '' }}" required></label>
+      <label>Phone<input name="phone" value="{{ user.phone or '' }}"></label>
+      <button class="btn">Save Profile</button>
+    </form>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><h2>Record a donation</h2><span class="badge">+10 credits</span></div>
+    <form method="post" action="{{ url_for('donate') }}" class="form-card flat">
+      <label>Donation date<input type="date" name="donation_date"></label>
+      <label>Hospital / blood bank<input name="hospital_name" placeholder="Verified facility"></label>
+      <button class="btn">Submit donation record</button>
+      <p class="muted">For the prototype this is admin-verifiable. A real system must integrate with licensed facilities.</p>
+    </form>
+  </section>
+</div>
+
+<section class="section">
+  <div class="panel-head"><h2>Verified emergency requests</h2><span class="muted">Medical urgency first</span></div>
+  <div class="request-grid">
+  {% for r in open_requests %}
+    <article class="request-card">
+      <span class="priority {{ r.priority|lower }}">{{ r.priority }}</span>
+      <h3>{{ r.blood_group }} <small>· {{ r.units }} unit(s)</small></h3>
+      <p>{{ r.hospital_name }} · {{ r.city }}</p>
+      <form method="post" action="{{ url_for('support', request_id=r.id) }}"><button class="btn small">Offer emergency support</button></form>
+    </article>
+  {% else %}<div class="empty">No verified open requests.</div>{% endfor %}
+  </div>
+</section>
+
+<section class="two-col section">
+  <section class="panel"><div class="panel-head"><h2>Donation history</h2></div>
+    <table><tr><th>Date</th><th>Facility</th><th>Credits</th></tr>
+    {% for d in donations %}<tr><td>{{ d.donation_date }}</td><td>{{ d.hospital_name }}</td><td>+{{ d.credits_awarded }}</td></tr>{% else %}<tr><td colspan="3">No donations recorded.</td></tr>{% endfor %}</table>
+  </section>
+  <section class="panel"><div class="panel-head"><h2>Support cases</h2></div>
+    {% for s in supports %}<div class="support"><b>{{s.blood_group}} · {{s.patient_name}}</b><span>{{s.status}} · due {{s.due_date or '—'}}</span></div>{% else %}<div class="empty">No support cases.</div>{% endfor %}
+  </section>
+</section>
+{% endblock %}

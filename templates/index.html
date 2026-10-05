@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}BloodBridge — Save Lives{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <span class="pill">🩸 COMMUNITY BLOOD NETWORK</span>
+    <h1>When blood is needed,<br><em>need comes first.</em></h1>
+    <p>Connect verified emergency requests with eligible donors. Donors contribute to a community credit network that helps keep emergency support accessible to everyone.</p>
+    <div class="actions">
+      <a class="btn" href="{{ url_for('register') }}">Become a Donor</a>
+      <a class="btn outline" href="{{ url_for('request_blood') }}">Request Blood</a>
+    </div>
+  </div>
+  <div class="hero-card">
+    <div class="pulse">♥</div>
+    <h3>Medical need, not wealth</h3>
+    <p>Emergency priority is based on verified clinical urgency, with hospital/medical confirmation.</p>
+  </div>
+</section>
+
+<section class="stats">
+  <div><b>{{ stats.donors }}</b><span>Registered Donors</span></div>
+  <div><b>{{ stats.requests }}</b><span>Blood Requests</span></div>
+  <div><b>{{ stats.fulfilled }}</b><span>Fulfilled Requests</span></div>
+  <div><b>{{ stats.credits }}</b><span>Community Credits</span></div>
+</section>
+
+<section class="section">
+  <div class="section-head"><div><span class="eyebrow">HOW IT WORKS</span><h2>From donation to emergency support</h2></div></div>
+  <div class="grid-4">
+    <div class="feature"><span>01</span><h3>Register</h3><p>Create a donor profile with blood group and location.</p></div>
+    <div class="feature"><span>02</span><h3>Donate</h3><p>Verified donations add community credits to your dashboard.</p></div>
+    <div class="feature"><span>03</span><h3>Verify</h3><p>Hospitals/admins verify emergency requests before matching.</p></div>
+    <div class="feature"><span>04</span><h3>Match</h3><p>Find compatible eligible donors and prioritize verified urgency.</p></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head"><div><span class="eyebrow">LIVE REQUESTS</span><h2>Verified emergency needs</h2></div></div>
+  {% if urgent %}
+  <div class="request-grid">
+    {% for r in urgent %}
+    <article class="request-card">
+      <span class="priority {{ r.priority|lower }}">{{ r.priority }}</span>
+      <h3>{{ r.blood_group }} <small>· {{ r.units }} unit{% if r.units != 1 %}s{% endif %}</small></h3>
+      <p>{{ r.hospital_name }} · {{ r.city }}</p>
+      <a href="{{ url_for('request_blood') }}">Help / Request support →</a>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+    <div class="empty">No verified emergency requests at the moment.</div>
+  {% endif %}
+</section>
+
+<section class="cta">
+  <div><span class="eyebrow">OUR PRINCIPLE</span><h2>Blood is a medical need, not a privilege.</h2><p>Credits encourage contribution; they do not determine who receives medically necessary blood.</p></div>
+  <a class="btn" href="{{ url_for('register') }}">Join BloodBridge</a>
+</section>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Join BloodBridge{% endblock %}
+{% block content %}
+<div class="auth">
+  <div><span class="eyebrow">JOIN THE NETWORK</span><h1>Become a donor</h1><p>Your donation can strengthen an emergency support network for someone else.</p></div>
+  <form method="post" class="form-card">
+    <label>Name<input name="name" required></label>
+    <label>Email<input type="email" name="email" required></label>
+    <label>Phone<input name="phone"></label>
+    <label>Blood Group<select name="blood_group"><option value="">Select</option>{% for g in blood_groups %}<option>{{g}}</option>{% endfor %}</select></label>
+    <label>City<input name="city" required></label>
+    <label>Password<input type="password" name="password" minlength="6" required></label>
+    <button class="btn">Create donor account</button>
+  </form>
+</div>
+{% endblock %}

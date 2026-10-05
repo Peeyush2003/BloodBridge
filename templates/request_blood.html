@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Request Blood — BloodBridge{% endblock %}
+{% block content %}
+<div class="auth">
+  <div><span class="eyebrow">EMERGENCY SUPPORT</span><h1>Request blood</h1><p>Submit accurate information. The request will remain unavailable for matching until authorized verification.</p></div>
+  <form method="post" class="form-card">
+    <label>Patient name<input name="patient_name" required></label>
+    <label>Blood Group<select name="blood_group">{% for g in blood_groups %}<option>{{g}}</option>{% endfor %}</select></label>
+    <label>Units required<input type="number" name="units" value="1" min="1" max="20" required></label>
+    <label>Emergency priority
+      <select name="priority">
+        <option>CRITICAL</option><option>URGENT</option><option>REQUIRED</option>
+      </select>
+    </label>
+    <label>Hospital / Blood Bank<input name="hospital_name" required></label>
+    <label>Hospital verification email<input type="email" name="hospital_email" required></label>
+    <label>City<input name="city" required></label>
+    <label>Medical note / reference<textarea name="medical_note" rows="5" placeholder="Provide only information appropriate for authorized verification."></textarea></label>
+    <button class="btn">Submit emergency request</button>
+  </form>
+</div>
+{% endblock %}
